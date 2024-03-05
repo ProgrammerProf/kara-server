@@ -21,8 +21,10 @@ class user(models.Model):
     ip = models.CharField(max_length=255, null=True, blank=True)
     host = models.CharField(max_length=255, null=True, blank=True)
     create_date = models.CharField(max_length=255, null=True, blank=True)
-    login_date = models.CharField(max_length=255, null=True, blank=True)
     update_date = models.CharField(max_length=255, null=True, blank=True)
+    login_date = models.CharField(max_length=255, null=True, blank=True)
+    login_ip = models.CharField(max_length=255, null=True, blank=True)
+    login_host = models.CharField(max_length=255, null=True, blank=True)
     removed_date = models.CharField(max_length=255, null=True, blank=True)
     notes = models.CharField(max_length=255, null=True, blank=True)
     image = models.CharField(max_length=255, null=True, blank=True)
@@ -295,26 +297,26 @@ class action(models.Model):
     # edit_setting
     # edit_payment
     # delete_setting-products
-    # create_category
+    # add_category
     # edit_category
     # delete_category
-    # create_product
+    # add_product
     # edit_product
     # delete_product
-    # create_coupon
+    # add_coupon
     # edit_coupon
     # delete_coupon
-    # create_booking
+    # add_booking
     # edit_booking
     # delete_booking
     # confirm_booking
     # cancel_booking
-    # create_admin
+    # add_admin
     # edit_admin
     # delete_admin
-    # create_owner
+    # add_owner
     # edit_owner
     # delete_owner
-    # create_guest
+    # add_guest
     # edit_guest
     # delete_guest

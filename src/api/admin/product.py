@@ -108,6 +108,7 @@ def add(request, usr):
     ).save()
     id = product.objects.latest('id').id
     upload_files(request, id, 'product')
+    record_action(request, user_id=usr.id, type='add_product', action_id=id)
     return response(status=True)
 
 @auth_admin
@@ -163,6 +164,7 @@ def edit(request, usr):
     config.update_date = get_date()
     config.save()
     upload_files(request, id, 'product')
+    record_action(request, user_id=usr.id, type='edit_product', action_id=config.id)
     return response(status=True)
 
 @auth_admin
@@ -179,4 +181,5 @@ def delete(request, usr):
         for item in items:
             remove_file(f'product/{item.link}')
             item.delete()
+        record_action(request, user_id=usr.id, type='delete_product', action_id=id)
     return response(status=True)

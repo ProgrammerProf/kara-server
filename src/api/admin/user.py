@@ -89,6 +89,12 @@ def add(request, usr):
         notifications=notifications, statistics=statistics, active=active, supervisor=supervisor,
         control_owners_balance=control_owners_balance, control_guests_balance=control_guests_balance,
     ).save()
+    id = user.objects.latest('id').id
+    record_action(
+        request, user_id=usr.id,
+        type=f'add_{"admin" if role == 1 else "owner" if role == 2 else "guest"}',
+        action_id=id
+    )
     return response(status=True)
 
 @auth_admin
@@ -152,6 +158,11 @@ def edit(request, usr):
         remove_file(f'user/{config.image}')
         config.image = image
     config.save()
+    record_action(
+        request, user_id=usr.id,
+        type=f'edit_{"admin" if role == 1 else "owner" if role == 2 else "guest"}',
+        action_id=config.id
+    )
     return response(status=True)
 
 @auth_admin
@@ -172,4 +183,9 @@ def delete(request, usr):
         for item in product.objects.filter(owner_id=id):
             item.owner_id = 0
             item.save()
+        record_action(
+            request, user_id=usr.id,
+            type=f'delete_{"admin" if role == 1 else "owner" if role == 2 else "guest"}',
+            action_id=id
+        )
     return response(status=True)

@@ -31,6 +31,8 @@ def add(request, usr):
         location=location, allow_products=allow_products, active=active, create_date=get_date(),
         update_date=get_date(), image=image
     ).save()
+    id = category.objects.latest('id').id
+    record_action(request, user_id=usr.id, type='add_category', action_id=id)
     return response(status=True)
 
 @auth_admin
@@ -56,6 +58,7 @@ def edit(request, usr):
         remove_file(f'category/{config.image}')
         config.image = image
     config.save()
+    record_action(request, user_id=usr.id, type='edit_category', action_id=config.id)
     return response(status=True)
 
 @auth_admin
@@ -71,4 +74,5 @@ def delete(request, usr):
         for item in items:
             item.category_id = 0
             item.save()
+        record_action(request, user_id=usr.id, type='delete_category', action_id=id)
     return response(status=True)

@@ -1,3 +1,4 @@
+from cryptography.fernet import Fernet
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +14,18 @@ from datetime import datetime
 import socket, random, os, json, datetime as dt
 import shutil, base64, mimetypes, calendar, threading
 from app.models import *
+
+cipher = Fernet('v9Mj4ZmX9D-JC6Z8cmLbsUvOo3_fy_g5OsDY2nX3Weo=')
+
+def encrypt(data):
+    try: return cipher.encrypt(str(data).encode()).decode()
+    except: ...
+    return ''
+
+def decrypt(token):
+    try: return cipher.decrypt(token).decode()
+    except: ...
+    return ''
 
 def media_url(request, image_id):
     if len(str(image_id)) < 2: return response()

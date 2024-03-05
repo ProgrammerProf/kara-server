@@ -82,6 +82,8 @@ def add(request, usr):
         update_date=get_date(), admin_id=admin_id, user_id=user_id, product_id=product_id,
         coupon=coupon_code, discount=discount, price=round(price, 2)
     ).save()
+    id = booking.objects.latest('id').id
+    record_action(request, user_id=usr.id, type='add_booking', action_id=id)
     return response(status=True)
 
 @auth_admin
@@ -101,6 +103,7 @@ def edit(request, usr):
     config.active = bool(request.POST.get('active'))
     config.update_date = get_date()
     config.save()
+    record_action(request, user_id=usr.id, type='edit_booking', action_id=config.id)
     return response(status=True)
 
 @auth_admin
@@ -113,4 +116,5 @@ def delete(request, usr):
         config.removed = True
         config.removed_date = get_date()
         config.save()
+        record_action(request, user_id=usr.id, type='delete_booking', action_id=id)
     return response(status=True)

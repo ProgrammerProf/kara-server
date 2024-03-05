@@ -15,47 +15,23 @@ def action_data(type, user_id, action_id):
         config = user.objects.filter(id=action_id).first()
         if config:
             data = {
-                'id': config.id,
-                'name': config.name,
-                'image': f'U{config.id}',
+                'id': config.id, 'name': config.name,
                 'link': f'admins/edit/{config.id}' if config.role == 1 else f'owners/edit/{config.id}'
                 if config.role == 2 else f'guests/edit/{config.id}'
             }
     if type.find('category') != -1:
         config = category.objects.filter(id=action_id).first()
-        if config:
-            data = {
-                'id': config.id,
-                'name': config.name,
-                'image': f'C{config.id}',
-                'link': f'categories/edit/{config.id}'
-            }
+        if config: data = {'id': config.id, 'name': config.name, 'link': f'categories/edit/{config.id}'}
     if type.find('product') != -1:
         config = product.objects.filter(id=action_id).first()
-        if config:
-            data = {
-                'id': config.id,
-                'name': config.name,
-                'link': f'properties/edit/{config.id}'
-            }
-            f = file.objects.filter(product_id=config.id, type='image').first()
-            if f: data['image'] = f'P{f.id}'
+        if config: data = {'id': config.id, 'name': config.name, 'link': f'properties/edit/{config.id}'}
     if type.find('coupon') != -1:
         config = coupon.objects.filter(id=action_id).first()
-        if config:
-            data = {
-                'id': config.id,
-                'name': config.code,
-                'link': f'coupons'
-            }
+        if config: data = {'id': config.id, 'name': config.code, 'link': 'coupons'}
     if type.find('booking') != -1:
         config = booking.objects.filter(id=action_id).first()
-        if config:
-            data = {
-                'id': config.id,
-                'name': 'Booking Url',
-                'link': f'bookings/edit/{config.id}'
-            }
+        if config: data = {'id': config.id, 'name': 'Booking Url', 'link': f'bookings/edit/{config.id}'}
+    data['action_id'] = action_id
     return _user_, data
 
 @auth_admin

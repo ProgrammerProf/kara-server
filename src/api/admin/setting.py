@@ -22,6 +22,7 @@ def save(request, usr):
     config.twitter = request.POST.get('twitter')
     config.telegram = request.POST.get('telegram')
     config.save()
+    record_action(request, user_id=usr.id, type='edit_server_settings')
     return response(status=True)
 
 @auth_super
@@ -47,6 +48,7 @@ def option(request, usr):
     config.deposits = bool(request.POST.get('deposits'))
     config.running = bool(request.POST.get('running'))
     config.save()
+    record_action(request, user_id=usr.id, type='edit_server_settings')
     return response(status=True)
 
 @auth_super
@@ -60,6 +62,7 @@ def payments(request, usr):
     config.date = request.POST.get('date')
     config.address = request.POST.get('address')
     config.save()
+    record_action(request, user_id=usr.id, type='edit_server_payments')
     return response(status=True)
 
 @auth_super
@@ -102,6 +105,7 @@ def delete(request, usr):
         for ch in data:
             remove_file(f'user/{ch.image}')
             ch.delete()
+    record_action(request, user_id=usr.id, type=f'delete_all_{item}')
     return response(status=True)
 
 def default_data():
@@ -111,8 +115,8 @@ def default_data():
     user(
         name='Coding Master', email='codingmaster@gmail.com',
         phone='+201099188572', country='Egytp', city='Benha',
-        street='Egypt - Benha - city star', age=22, password='codingmaster',
-        language='ar', currency='sar',
+        street='Egypt - Benha - city star', age=22,
+        password='codingmaster', language='ar', currency='sar',
         create_date=get_date(), update_date=get_date(), login_date=get_date(),
         chat=True, mail=True, statistics=True, notifications=True,
         see_categories=True, add_categories=True, delete_categories=True,
