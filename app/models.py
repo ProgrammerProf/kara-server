@@ -14,6 +14,9 @@ class user(models.Model):
     age = models.FloatField(default=0)
     salary = models.FloatField(default=0)
     balance = models.FloatField(default=0)
+    profit = models.FloatField(default=0)
+    income = models.FloatField(default=0)
+    expenses = models.FloatField(default=0)
     visitors = models.IntegerField(default=0)
     orders = models.IntegerField(default=0)
     confirmed = models.IntegerField(default=0)
@@ -58,6 +61,7 @@ class user(models.Model):
     allow_products = models.BooleanField(default=False)
     allow_bookings = models.BooleanField(default=False)
     allow_coupons = models.BooleanField(default=False)
+    reports = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     removed = models.BooleanField(default=False)
 
@@ -223,6 +227,7 @@ class product(models.Model):
 
 class booking(models.Model):
     admin_id = models.IntegerField(default=0)
+    owner_id = models.IntegerField(default=0)
     user_id = models.IntegerField(default=0)
     product_id = models.IntegerField(default=0)
     name = models.CharField(max_length=255, null=True, blank=True)
@@ -230,6 +235,7 @@ class booking(models.Model):
     phone = models.CharField(max_length=255, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
     notes = models.CharField(max_length=255, null=True, blank=True)
+    secret = models.CharField(max_length=255, null=True, blank=True)
     price = models.FloatField(default=0)
     discount = models.FloatField(default=0)
     create_date = models.CharField(max_length=255, null=True, blank=True)
@@ -245,6 +251,8 @@ class booking(models.Model):
     removed = models.BooleanField(default=False)
 
 class coupon(models.Model):
+    owner_id = models.IntegerField(default=0)
+    product_id = models.IntegerField(default=0)
     code = models.CharField(max_length=255, null=True, blank=True)
     discount = models.FloatField(default=0)
     uses = models.IntegerField(default=0)
@@ -270,6 +278,8 @@ class payout(models.Model):
     date = models.CharField(max_length=255, null=True, blank=True)
 
 class action(models.Model):
+    admin_id = models.IntegerField(default=0)
+    owner_id = models.IntegerField(default=0)
     user_id = models.IntegerField(default=0)
     action_id = models.IntegerField(default=0)
     amount = models.FloatField(default=0)

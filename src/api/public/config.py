@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from project.settings import BASE_DIR
 from datetime import datetime
-import socket, random, os, json, datetime as dt
+import socket, random, os, json, string, datetime as dt
 import shutil, base64, mimetypes, calendar, threading
 from app.models import *
 

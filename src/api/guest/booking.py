@@ -12,12 +12,12 @@ def generate_secret():
     if booking.objects.filter(secret=secret).exists(): generate_secret()
     return secret
 
-@auth_admin
+@auth_owner
 def default(request, usr):
     if not usr.see_bookings or not usr.add_bookings: return response()
-    products = product.objects.filter(active=True, removed=False, allow_bookings=True).order_by('-id')
+    products = product.objects.filter(owner_id=usr.id, active=True, removed=False, allow_bookings=True).order_by('-id')
     users = user.objects.filter(active=True, removed=False, role=3, allow_bookings=True).order_by('-id')
-    coupons = coupon.objects.filter(active=True).order_by('-id')
+    coupons = coupon.objects.filter(owner_id=usr.id, active=True).order_by('-id')
     products_list = []
     for item in products.values():
         f = file.objects.filter(product_id=item['id'], type='image').first()
@@ -30,12 +30,12 @@ def default(request, usr):
     }
     return response(**data)
 
-@auth_admin
+@auth_owner
 def index(request, usr):
     if not usr.see_bookings: return response()
     id = integer(request.POST.get('id'))
-    if id: items = booking.objects.filter(id=id, removed=False)
-    else: items = booking.objects.filter(removed=False).order_by('-id')
+    if id: items = booking.objects.filter(id=id, owner_id=usr.id, removed=False)
+    else: items = booking.objects.filter(owner_id=usr.id, removed=False).order_by('-id')
     data = []
     for item in items.values():
         item['coupon_code'] = item['coupon']
@@ -55,10 +55,9 @@ def index(request, usr):
     if id: data = data[0] if data else {}
     return response(data=data)
 
-@auth_admin
+@auth_owner
 def add(request, usr):
     if not usr.see_bookings or not usr.add_bookings: return response()
-    admin_id = integer(request.POST.get('user'))
     user_id = integer(request.POST.get('user_id'))
     product_id = integer(request.POST.get('product_id'))
     coupon_id = integer(request.POST.get('coupon_id'))
@@ -91,18 +90,20 @@ def add(request, usr):
     booking(
         name=name, email=email, phone=phone, address=address, booking_date=booking_date,
         notes=notes, status=status, paid=paid, active=active, create_date=get_date(),
-        update_date=get_date(), admin_id=admin_id, user_id=user_id, product_id=product_id,
+        update_date=get_date(), owner_id=usr.id, user_id=user_id, product_id=product_id,
         coupon=coupon_code, discount=discount, price=round(price, 2), secret=generate_secret()
     ).save()
     id = booking.objects.latest('id').id
     record_action(request, user_id=usr.id, type='add_booking', action_id=id)
+    usr.orders += 1
+    usr.save()
     return response(status=True)
 
-@auth_admin
+@auth_owner
 def edit(request, usr):
     if not usr.see_bookings: return response()
     id = integer(request.POST.get('id'))
-    config = booking.objects.filter(id=id, removed=False).first()
+    config = booking.objects.filter(id=id, owner_id=usr.id, removed=False).first()
     if not config: return response()
     config.name = request.POST.get('name')
     config.email = request.POST.get('email')
@@ -118,12 +119,12 @@ def edit(request, usr):
     record_action(request, user_id=usr.id, type='edit_booking', action_id=config.id)
     return response(status=True)
 
-@auth_admin
+@auth_owner
 def delete(request, usr):
     if not usr.see_bookings or not usr.delete_bookings: return response()
     ids = parse(request.POST.get('ids'))
     for id in ids:
-        config = booking.objects.filter(id=id, removed=False).first()
+        config = booking.objects.filter(id=id, owner_id=usr.id, removed=False).first()
         if not config: continue
         config.removed = True
         config.removed_date = get_date()

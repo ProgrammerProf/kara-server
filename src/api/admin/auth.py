@@ -25,7 +25,6 @@ def login(request):
     if password != config.password: return response(status='not_match')
     if not config.super:
         settings = setting.objects.filter(active=True).first()
-        if not settings: return response(status='logout')
         if not settings.admin_login: return response(status='logout')
     config.login_date = get_date()
     config.login_ip = client(request, 'ip')

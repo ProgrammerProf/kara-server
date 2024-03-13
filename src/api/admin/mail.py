@@ -10,6 +10,8 @@ def user_data(_user_):
         'online': False,
         'balance': _user_.balance,
         'role': _user_.role,
+        'super': _user_.super,
+        'supervisor': _user_.supervisor,
     }
     return data
 

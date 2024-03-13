@@ -46,3 +46,29 @@ def auth_super(func):
         if not _user_: return response()
         return func(request, _user_, *args, **kwargs)
     return wrapper
+
+def auth_owner(func):
+    @csrf_exempt
+    def wrapper(request, *args, **kwargs):
+        if request.method != 'POST': return response()
+        id = integer(decrypt(request.POST.get('token')))
+        _user_ = user.objects.filter(id=id, role=2, active=True, removed=False).first()
+        if not _user_: return response()
+        settings = setting.objects.filter(active=True).first()
+        if not settings: return response(status='logout')
+        if not settings.user_login: return response(status='logout')
+        return func(request, _user_, *args, **kwargs)
+    return wrapper
+
+def auth_guest(func):
+    @csrf_exempt
+    def wrapper(request, *args, **kwargs):
+        if request.method != 'POST': return response()
+        id = integer(decrypt(request.POST.get('token')))
+        _user_ = user.objects.filter(id=id, role=3, active=True, removed=False).first()
+        if not _user_: return response()
+        settings = setting.objects.filter(active=True).first()
+        if not settings: return response(status='logout')
+        if not settings.user_login: return response(status='logout')
+        return func(request, _user_, *args, **kwargs)
+    return wrapper
