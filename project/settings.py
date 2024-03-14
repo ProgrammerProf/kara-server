@@ -1,9 +1,9 @@
 from pathlib import Path
 import os, pymysql
 
-DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1']
-CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:3000']
+DEBUG = False
+ALLOWED_HOSTS = ['kaarra.pythonanywhere.com']
+CORS_ALLOWED_ORIGINS = ['https://kara-admin.vercel.app']
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 DATA_UPLOAD_MAX_NUMBER_FILES = None
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000
@@ -60,10 +60,10 @@ AUTH_PASSWORD_VALIDATORS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'localhost',
-        'NAME': 'hotel',
-        'USER': 'root',
-        'PASSWORD': '',
+        'HOST': 'kaarra.mysql.pythonanywhere-services.com',
+        'NAME': 'kaarra$default',
+        'USER': 'kaarra',
+        'PASSWORD': 'coderprof',
     }
 }
 
